@@ -42,19 +42,13 @@ std::string get_ld_library_path(char** envp) {
 }
 
 std::list<std::string> get_needed_libraries(const char* fn) {
-    std::vector<char> file_data = [fname = fn] {
-        std::ifstream file(fname, std::ios::binary | std::ios::in);
-        return std::vector<char>(std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>{});
-    }();
-
     std::list<std::string> needed_libs;
-
-    char *pybytes = file_data.data();
+    std::ifstream file(fn, std::ios::binary | std::ios::in);
 
     const unsigned char expected_magic[] = {ELFMAG0, ELFMAG1, ELFMAG2, ELFMAG3};
     Elf64_Ehdr elf_hdr;
 
-    memmove(&elf_hdr, pybytes, sizeof(elf_hdr));
+    file.read((char*)(&elf_hdr), sizeof(elf_hdr));
 
     if (memcmp(elf_hdr.e_ident, expected_magic, sizeof(expected_magic)) != 0) {
         std::cerr << "Target is not an ELF executable\n";
@@ -69,8 +63,6 @@ std::list<std::string> get_needed_libraries(const char* fn) {
         exit(1);
     }
 
-    char *cbytes = (char *)pybytes;
-
     size_t dynsect_off = 0;
     size_t dynsect_sz = 0;
 
@@ -78,8 +70,8 @@ std::list<std::string> get_needed_libraries(const char* fn) {
         size_t offset = elf_hdr.e_shoff + i * elf_hdr.e_shentsize;
         Elf64_Shdr shdr;
 
-        memmove(&shdr, pybytes + offset, sizeof(shdr));
-
+        file.seekg(offset);
+        file.read((char*)(&shdr), sizeof(shdr));
         if (shdr.sh_type == SHT_DYNAMIC) {
             dynsect_off = shdr.sh_offset;
             dynsect_sz = shdr.sh_size;
@@ -96,8 +88,8 @@ std::list<std::string> get_needed_libraries(const char* fn) {
         Elf64_Dyn dyn;
         size_t absoffset = dynsect_off + j * sizeof(Elf64_Dyn);
 
-        memmove(&dyn, cbytes + absoffset, sizeof(dyn));
-
+        file.seekg(absoffset);
+        file.read((char*)(&dyn), sizeof(dyn));
         if (dyn.d_tag == DT_STRTAB) {
             dt_strtab_ofs = dyn.d_un.d_val;
         }
@@ -106,11 +98,17 @@ std::list<std::string> get_needed_libraries(const char* fn) {
         Elf64_Dyn dyn;
         size_t absoffset = dynsect_off + j * sizeof(Elf64_Dyn);
 
-        memmove(&dyn, cbytes + absoffset, sizeof(dyn));
+        file.seekg(absoffset);
+        file.read((char*)(&dyn), sizeof(dyn));
         if (dyn.d_tag == DT_NEEDED) {
-            needed_libs.push_back(std::move(std::string(cbytes + dt_strtab_ofs + dyn.d_un.d_val)));
+            file.seekg(dt_strtab_ofs + dyn.d_un.d_val);
+            std::string s;
+            std::getline(file, s, '\0');
+            needed_libs.push_back(std::move(s));
         }
     }
+
+    file.close();
 
     return needed_libs;
 }
