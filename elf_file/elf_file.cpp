@@ -25,24 +25,6 @@ elf_file::elf_file(char* fn) {
 
 elf_file::~elf_file() {}
 
-// size_t elf_file::get_dynsect_offset() const {
-//     return _dynsect_off;
-// }
-// size_t elf_file::get_dynsect_size() const {
-//     return _dynsect_sz;
-// }
-// size_t elf_file::get_dt_strtab_offset() const {
-//     return _dt_strtab_ofs;
-// }
-
-// bool elf_file::is_elf_error() const {
-//     return _elf_error;
-// }
-
-// std::string elf_file::get_error_message() const {
-//     return _error_msg;
-// }
-
 std::list<std::string> elf_file::get_needed_libraries() const {
     return _needed_libs;
 }

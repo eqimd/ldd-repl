@@ -12,11 +12,6 @@ public:
     elf_file(char* fn);
     ~elf_file();
 
-    // size_t get_dynsect_offset() const;
-    // size_t get_dynsect_size() const;
-    // size_t get_dt_strtab_offset() const;
-    // bool is_elf_error() const;
-    // std::string get_error_message() const;
     std::list<std::string> get_needed_libraries() const;
     std::string get_rpath() const;
 private:
@@ -32,7 +27,4 @@ private:
     std::string _rpath;
 
     std::list<std::string> _needed_libs;
-
-    // bool _elf_error = false;
-    // std::string _error_msg;
 };
