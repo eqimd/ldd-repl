@@ -36,5 +36,6 @@ jobs:
       run: ctest -C ${{env.BUILD_TYPE}}
 
     - name: Compare ldd-repl with original ldd
+      working-directory: ${{github.workspace}}
       run: python3 ${{github.workspace}}/tests/compare.py 
       
