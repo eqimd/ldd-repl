@@ -13,11 +13,13 @@ int main(int argc, char** argv, char** envp) {
     std::string fn(argv[1]);
 
     std::list<std::string> paths = {"/lib", "/usr/lib"};
-    std::string ld_lib_path = read_ld_library_path(envp);
+    std::string ld_lib_path = std::move(read_ld_library_path(envp));
     if (ld_lib_path != "") {
         paths.push_front(ld_lib_path);
     }
-    read_etc_conf_dir(paths);
+
+    std::list<std::string> etc_conf_dir_paths = std::move(read_etc_conf_dir());
+    paths.insert(paths.end(), etc_conf_dir_paths.begin(), etc_conf_dir_paths.end());
 
     std::map<std::string, std::string> libs_and_paths;
     parse_needed_libs_and_paths(fn, paths, libs_and_paths);

@@ -14,4 +14,4 @@ void parse_needed_libs_and_paths(
     std::map<std::string, std::string>& libs_and_paths
 );
 
-void read_etc_conf_dir(std::list<std::string>& paths);
+std::list<std::string> read_etc_conf_dir();
