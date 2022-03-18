@@ -2,7 +2,7 @@
 #include "elf_file.h"
 
 #include <string>
-#include <list>
+#include <map>
 #include <utility>
 #include <algorithm>
 #include <filesystem>
@@ -21,47 +21,45 @@ std::string read_ld_library_path(char** envp) {
 }
 
 void parse_needed_libs_and_paths(
-    std::string& libname,
+    const std::string& lib_name,
     const std::list<std::string>& paths,
-    std::list<std::pair<std::string, std::string>>& libs_and_paths
+    std::map<std::string, std::string>& libs_and_paths
 ) {
 
-    elf_file ef(libname);
+    elf_file ef(lib_name);
     std::string ef_rpath = ef.get_rpath();
     for (auto& lib : ef.get_needed_libraries()) {
-        auto lib_pos = std::find_if(libs_and_paths.begin(), libs_and_paths.end(),
-                            [libname](std::pair<std::string, std::string> const &b) { 
-                                return b.first == libname; 
-                            });
-        if (lib_pos != libs_and_paths.end()) {
+        if (libs_and_paths.find(lib) != libs_and_paths.end()) {
             continue;
         }
-
-        bool found = false;
+        
         if (ef_rpath != "" && std::filesystem::exists(ef_rpath + "/" + lib)) {
-            libs_and_paths.push_back({lib, ef_rpath});
+            libs_and_paths[lib] = ef_rpath;
+            parse_needed_libs_and_paths(ef_rpath + "/" + lib, paths, libs_and_paths);
         } else {
             bool found = false;
             for (auto& path : paths) {
                 if (std::filesystem::exists(path + "/" + lib)) {
-                    libs_and_paths.push_back({lib, path});
+                    libs_and_paths[lib] = path;
                     found = true;
+                    parse_needed_libs_and_paths(path + "/" + lib, paths, libs_and_paths);
                     break;
                 }
             }
             if (!found) {
-                libs_and_paths.push_back({lib, "<not found>"});
+                libs_and_paths[lib] = "<not found>";
             }
         }
-
-        parse_needed_libs_and_paths(lib, paths, libs_and_paths);
     }
 }
 
-void read_etc_conf(std::list<std::string>& paths) {
-    
-}
-
 void read_etc_conf_dir(std::list<std::string>& paths) {
-
+    std::string etc_conf_path = "/etc/ld.so.conf.d";
+    for (auto& entry : std::filesystem::directory_iterator(etc_conf_path)) {
+        std::ifstream file(entry.path());
+        std::string path;
+        while (file >> path) {
+            paths.push_back(path);
+        }
+    }
 }

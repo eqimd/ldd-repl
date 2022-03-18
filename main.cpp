@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <map>
 
 
 int main(int argc, char** argv, char** envp) {
@@ -16,10 +17,12 @@ int main(int argc, char** argv, char** envp) {
     if (ld_lib_path != "") {
         paths.push_front(ld_lib_path);
     }
-    std::list<std::pair<std::string, std::string>> libs_and_paths;
+    read_etc_conf_dir(paths);
+
+    std::map<std::string, std::string> libs_and_paths;
     parse_needed_libs_and_paths(fn, paths, libs_and_paths);
 
-    for (auto& p : libs_and_paths) {
-        std::cout << p.first << " => " << p.second << "\n";
+    for (auto& it : libs_and_paths) {
+        std::cout << "\t" << it.first << " => " << it.second << "\n";
     }
 }

@@ -2,12 +2,16 @@
 
 #include <string>
 #include <list>
+#include <map>
 
 const std::string LD_LIB_PATH_VAR_NAME = "LD_LIBRARY_PATH";
 
 std::string read_ld_library_path(char** envp);
+
 void parse_needed_libs_and_paths(
-    std::string& libname,
+    const std::string& lib_name,
     const std::list<std::string>& paths,
-    std::list<std::pair<std::string, std::string>>& libs_and_paths
+    std::map<std::string, std::string>& libs_and_paths
 );
+
+void read_etc_conf_dir(std::list<std::string>& paths);
