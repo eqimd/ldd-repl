@@ -36,7 +36,7 @@ void parse_needed_libs_and_paths(
                 }
             }
             if (!found) {
-                libs_and_paths[lib] = "<not found>";
+                libs_and_paths[lib] = "not found";
             }
         }
     }
