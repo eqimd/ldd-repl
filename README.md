@@ -4,7 +4,8 @@ Usage:
 ```bash
 ./ldd-repl <binary>
 ```
-Build:
-1. Run `cmake -B build`
-2. Run `cmake --build build`
-3. Now you have an executable `ldd-repl` in `build/` directory.
+Build: run
+```bash
+cmake -B build && cmake --build build && rm -r build
+```
+Now you have an executable `ldd-repl`.
