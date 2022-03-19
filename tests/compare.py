@@ -3,7 +3,7 @@ from os.path import isfile, join
 import subprocess
 
 def get_ldd_repl_out(filename):
-    return subprocess.check_output([getcwd() + '/build/ldd-repl', filename])
+    return subprocess.check_output([getcwd() + '/ldd-repl', filename])
 
 def get_ldd_orig_out(filename):
     return subprocess.check_output(['ldd', filename])
@@ -25,7 +25,8 @@ def main():
 
             if out_orig != out_repl:
                 exit(1)
-        except:
+
+        except subprocess.CalledProcessError:
             continue
 
 
