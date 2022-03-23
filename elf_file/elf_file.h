@@ -18,12 +18,14 @@ private:
     void read_needed_libs_and_rpath(std::ifstream& file);
     void read_dynsect_off_and_sz(std::ifstream& file);
     void read_dt_strtab_ofs(std::ifstream& file);
+    void read_load_addr(std::ifstream& file);
 
     Elf64_Ehdr _elf_hdr;
 
-    size_t _dynsect_off = 0;
-    size_t _dynsect_sz = 0;
-    size_t _dt_strtab_ofs = 0;
+    Elf64_Off _dynsect_off = 0;
+    Elf64_Xword _dynsect_sz = 0;
+    Elf64_Xword _dt_strtab_ofs = 0;
+    Elf64_Xword _load_addr = 0;
     std::string _rpath;
 
     std::list<std::string> _needed_libs;
