@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <map>
+#include <vector>
 
 
 int main(int argc, char** argv, char** envp) {
@@ -12,13 +13,15 @@ int main(int argc, char** argv, char** envp) {
     }
     std::string fn(argv[1]);
 
-    std::list<std::string> paths = {"/lib", "/usr/lib"};
+    std::vector<std::string> paths;
     std::string ld_lib_path = std::move(read_ld_library_path(envp));
     if (ld_lib_path != "") {
-        paths.push_front(ld_lib_path);
+        paths.push_back(ld_lib_path);
     }
+    paths.push_back("/lib");
+    paths.push_back("/usr/lib");
 
-    std::list<std::string> etc_conf_dir_paths = std::move(read_etc_conf_dir());
+    std::vector<std::string> etc_conf_dir_paths = read_etc_conf_dir();
     paths.insert(paths.end(), etc_conf_dir_paths.begin(), etc_conf_dir_paths.end());
 
     std::map<std::string, std::string> libs_and_paths;

@@ -4,16 +4,15 @@
 
 #include <fstream>
 #include <string>
-#include <list>
+#include <vector>
+
 
 class elf_file {
 public:
-    elf_file(const std::string& fn);
-    elf_file(char* fn);
-    ~elf_file();
+    explicit elf_file(const std::string& fn);
 
-    std::list<std::string> get_needed_libraries() const;
-    std::string get_rpath() const;
+    const std::vector<std::string>& get_needed_libraries() const;
+    const std::string& get_rpath() const;
 private:
     void read_needed_libs_and_rpath(std::ifstream& file);
     void read_dynsect_off_and_sz(std::ifstream& file);
@@ -28,5 +27,5 @@ private:
     Elf64_Xword _load_addr = 0;
     std::string _rpath;
 
-    std::list<std::string> _needed_libs;
+    std::vector<std::string> _needed_libs;
 };

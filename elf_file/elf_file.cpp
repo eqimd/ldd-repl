@@ -4,6 +4,7 @@
 #include <cstring>
 #include <iterator>
 #include <iostream>
+#include <vector>
 
 
 elf_file::elf_file(const std::string& fn) {
@@ -19,13 +20,7 @@ elf_file::elf_file(const std::string& fn) {
     file.close();
 }
 
-elf_file::elf_file(char* fn) {
-    elf_file(std::string(fn));
-}
-
-elf_file::~elf_file() {}
-
-std::list<std::string> elf_file::get_needed_libraries() const {
+const std::vector<std::string>& elf_file::get_needed_libraries() const {
     return _needed_libs;
 }
 
@@ -84,6 +79,6 @@ void elf_file::read_dt_strtab_ofs(std::ifstream& file) {
     }
 }
 
-std::string elf_file::get_rpath() const {
+const std::string& elf_file::get_rpath() const {
     return _rpath;
 }

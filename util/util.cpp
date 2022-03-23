@@ -7,11 +7,12 @@
 #include <algorithm>
 #include <filesystem>
 #include <iostream>
+#include <vector>
 
 
 void parse_needed_libs_and_paths(
     const std::string& lib_name,
-    const std::list<std::string>& paths,
+    const std::vector<std::string>& paths,
     std::map<std::string, std::string>& libs_and_paths
 ) {
 
@@ -53,8 +54,8 @@ std::string read_ld_library_path(char** envp) {
     return "";
 }
 
-std::list<std::string> read_etc_conf_dir() {
-    std::list<std::string> paths;
+std::vector<std::string> read_etc_conf_dir() {
+    std::vector<std::string> paths;
     std::string etc_conf_path = "/etc/ld.so.conf.d";
     for (auto& entry : std::filesystem::directory_iterator(etc_conf_path)) {
         std::ifstream file(entry.path());
