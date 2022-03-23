@@ -10,7 +10,9 @@ def get_ldd_orig_out(filename):
 
 def main():
     bin_path = '/bin'
+    print('Bin path:', bin_path)
     bin_files = [(bin_path + '/' + f) for f in listdir(bin_path) if isfile(join(bin_path, f))]
+    print('Bin files count:', len(bin_files))
 
     for filename in bin_files:
         print('Current file:', filename)
