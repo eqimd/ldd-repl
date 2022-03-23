@@ -13,6 +13,7 @@ def main():
     bin_files = [(bin_path + '/' + f) for f in listdir(bin_path) if isfile(join(bin_path, f))]
 
     for filename in bin_files:
+        print('Current file:', filename)
         try:
             out_orig = set()
             for p_str in get_ldd_orig_out(filename).decode('ISO-8859-1').split('\n')[1:-1]:
