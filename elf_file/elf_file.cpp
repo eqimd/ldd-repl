@@ -31,7 +31,7 @@ std::list<std::string> elf_file::get_needed_libraries() const {
 
 void elf_file::read_needed_libs_and_rpath(std::ifstream& file) {
     Elf64_Dyn dyn;
-    for (size_t j = 0; j * sizeof(dyn) < _dynsect_sz; j++) {
+    for (size_t j = 0; j * sizeof(Elf64_Sym) < _dynsect_sz; j++) {
         size_t absoffset = _dynsect_off + j * sizeof(Elf64_Dyn);
 
         file.seekg(absoffset);
@@ -63,13 +63,11 @@ void elf_file::read_dynsect_off_and_sz(std::ifstream& file) {
 }
 void elf_file::read_dt_strtab_ofs(std::ifstream& file) {
     file.seekg(_dynsect_off);
-    Elf64_Sym dyn;
-    for (size_t j = 0; j * sizeof(dyn) < _dynsect_sz; j++) {
+    Elf64_Dyn dyn;
+    for (size_t j = 0; j * sizeof(Elf64_Sym) < _dynsect_sz; j++) {
         file.read(reinterpret_cast<char*>(&dyn), sizeof(dyn));
         if (dyn.d_tag == DT_STRTAB) {
-            // _dt_strtab_ofs = dyn.d_un.d_ptr;
-            _dt_strtab_ofs = 4864;
-            std::cout << "STRTAB OFFSET=" << _dt_strtab_ofs << "\n";
+            _dt_strtab_ofs = dyn.d_un.d_val;
             break;
         }
     }

@@ -23,7 +23,7 @@ private:
 
     size_t _dynsect_off = 0;
     size_t _dynsect_sz = 0;
-    Elf64_Addr _dt_strtab_ofs = 0;
+    size_t _dt_strtab_ofs = 0;
     std::string _rpath;
 
     std::list<std::string> _needed_libs;
