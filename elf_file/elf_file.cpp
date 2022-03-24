@@ -26,7 +26,7 @@ const std::vector<std::string>& elf_file::get_needed_libraries() const {
 
 void elf_file::read_needed_libs_and_rpath(std::ifstream& file) {
     Elf64_Dyn dyn;
-    for (size_t j = 0; j * sizeof(dyn) < _dynsect_sz; j++) {
+    for (Elf64_Xword j = 0; j * sizeof(dyn) < _dynsect_sz; j++) {
         size_t absoffset = _dynsect_off + j * sizeof(dyn);
 
         file.seekg(absoffset);
@@ -46,7 +46,7 @@ void elf_file::read_needed_libs_and_rpath(std::ifstream& file) {
 void elf_file::read_load_addr(std::ifstream& file) {
     file.seekg(_elf_hdr.e_phoff);
     Elf64_Phdr phdr;
-    for (uint16_t i = 0; i < _elf_hdr.e_phnum; i++) {
+    for (Elf64_Half i = 0; i < _elf_hdr.e_phnum; i++) {
         file.read(reinterpret_cast<char*>(&phdr), sizeof(phdr));
         if (phdr.p_type == PT_LOAD) {
             _load_addr = phdr.p_paddr - phdr.p_offset;
@@ -58,7 +58,7 @@ void elf_file::read_load_addr(std::ifstream& file) {
 void elf_file::read_dynsect_off_and_sz(std::ifstream& file) {
     file.seekg(_elf_hdr.e_phoff);
     Elf64_Phdr phdr;
-    for (uint16_t i = 0; i < _elf_hdr.e_phnum; i++) {
+    for (Elf64_Half i = 0; i < _elf_hdr.e_phnum; i++) {
         file.read(reinterpret_cast<char*>(&phdr), sizeof(phdr));
         if (phdr.p_type == PT_DYNAMIC) {
             _dynsect_off = phdr.p_offset;
@@ -70,7 +70,7 @@ void elf_file::read_dynsect_off_and_sz(std::ifstream& file) {
 void elf_file::read_dt_strtab_ofs(std::ifstream& file) {
     file.seekg(_dynsect_off);
     Elf64_Dyn dyn;
-    for (size_t j = 0; j * sizeof(dyn) < _dynsect_sz; j++) {
+    for (Elf64_Xword j = 0; j * sizeof(dyn) < _dynsect_sz; j++) {
         file.read(reinterpret_cast<char*>(&dyn), sizeof(dyn));
         if (dyn.d_tag == DT_STRTAB) {
             _dt_strtab_ofs = dyn.d_un.d_ptr - _load_addr;
