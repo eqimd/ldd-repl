@@ -37,5 +37,5 @@ jobs:
 
     - name: Compare ldd-repl with original ldd
       working-directory: ${{github.workspace}}
-      run: python3 ${{github.workspace}}/tests/compare.py 
+      run: cd ${{github.workspace}}/tests/ && bash get_out_and_compare.sh
       
