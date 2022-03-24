@@ -14,7 +14,7 @@ def main():
     bin_files = [(bin_path + '/' + f) for f in listdir(bin_path) if isfile(join(bin_path, f))]
     print('Bin files count:', len(bin_files))
 
-    test_files_counts = min(len(bin_files), 5)
+    test_files_counts = min(len(bin_files), 3)
 
     for filename in bin_files[:test_files_counts]:
         print('Current file:', filename)
