@@ -19,9 +19,9 @@ def main():
     for filename in bin_files[:test_files_counts]:
         print('Current file:', filename)
         # try:
-        #     out_orig = set()
-        #     for p_str in get_ldd_orig_out(filename).decode('ISO-8859-1').split('\n')[1:-1]:
-        #         out_orig.add(p_str.strip().split()[0].split('/')[-1])
+        out_orig = set()
+        for p_str in get_ldd_orig_out(filename).decode('ISO-8859-1').split('\n')[1:-1]:
+            out_orig.add(p_str.strip().split()[0].split('/')[-1])
 
         #     out_repl = set()
         #     for p_str in get_ldd_repl_out(filename).decode('ISO-8859-1').split('\n')[:-1]:
