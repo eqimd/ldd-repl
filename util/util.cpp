@@ -17,7 +17,7 @@ void parse_needed_libs_and_paths(
 ) {
 
     elf_file ef(lib_name);
-    std::string ef_rpath = std::move(ef.get_rpath());
+    const std::string& ef_rpath = ef.get_rpath();
     for (auto& lib : ef.get_needed_libraries()) {
         if (libs_and_paths.find(lib) != libs_and_paths.end()) {
             continue;
