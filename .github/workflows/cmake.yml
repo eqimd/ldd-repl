@@ -37,7 +37,7 @@ jobs:
 
     - name: Run on self
       working-directory: ${{github.workspace}}
-      run: ./ldd-repl
+      run: ./ldd-repl ldd-repl
 
     # - name: Compare ldd-repl with original ldd
     #   working-directory: ${{github.workspace}}
