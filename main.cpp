@@ -30,4 +30,6 @@ int main(int argc, char** argv, char** envp) {
     for (auto& it : libs_and_paths) {
         std::cout << "\t" << it.first << " => " << it.second << "\n";
     }
+
+    return 0;
 }
