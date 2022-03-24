@@ -37,11 +37,11 @@ jobs:
 
     - name: Run on /usr/bin/g++
       working-directory: ${{github.workspace}}
-      run: ./ldd-test /usr/bin/g++
+      run: ./ldd-repl /usr/bin/g++
 
     - name: Run on /usr/bin/sudoreplay
       working-directory: ${{github.workspace}}
-      run: ./ldd-test /usr/bin/sudoreplay
+      run: ./ldd-repl /usr/bin/sudoreplay
 
     # - name: Compare ldd-repl with original ldd
     #   working-directory: ${{github.workspace}}
