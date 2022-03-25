@@ -7,6 +7,7 @@ for filename in $(find /usr/bin -maxdepth 1 -type f -executable); do
     ldd $filename > orig.out
     python3 compare.py orig.out repl.out
     if [[ $? == 1 ]]; then
+        echo "Not equal"
         exit 1
     fi
 
