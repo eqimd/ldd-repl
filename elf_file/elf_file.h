@@ -6,13 +6,16 @@
 #include <string>
 #include <vector>
 
+using Filename = std::string;
+using Path = std::string;
+
 
 class elf_file {
 public:
-    explicit elf_file(const std::string& fn);
+    explicit elf_file(const Filename& fn);
 
-    const std::vector<std::string>& get_needed_libraries() const;
-    const std::vector<std::string>& get_rpaths() const;
+    const std::vector<Filename>& get_needed_libraries() const;
+    const std::vector<Path>& get_rpaths() const;
 private:
     void read_needed_libs_and_rpath(std::ifstream& file);
     void read_dynsect_off_and_sz(std::ifstream& file);
@@ -25,7 +28,7 @@ private:
     Elf64_Xword _dynsect_sz = 0;
     Elf64_Xword _dt_strtab_ofs = 0;
     Elf64_Xword _load_addr = 0;
-    std::vector<std::string> _rpaths;
+    std::vector<Path> _rpaths;
 
-    std::vector<std::string> _needed_libs;
+    std::vector<Filename> _needed_libs;
 };

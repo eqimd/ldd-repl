@@ -11,7 +11,7 @@
 
 
 
-elf_file::elf_file(const std::string& fn) {
+elf_file::elf_file(const Filename& fn) {
     std::ifstream file(fn, std::ios::binary | std::ios::in);
 
     file.read(reinterpret_cast<char*>(&_elf_hdr), sizeof(_elf_hdr));
@@ -24,7 +24,7 @@ elf_file::elf_file(const std::string& fn) {
     file.close();
 }
 
-const std::vector<std::string>& elf_file::get_needed_libraries() const {
+const std::vector<Filename>& elf_file::get_needed_libraries() const {
     return _needed_libs;
 }
 
@@ -37,12 +37,12 @@ void elf_file::read_needed_libs_and_rpath(std::ifstream& file) {
         file.read(reinterpret_cast<char*>(&dyn), sizeof(dyn));
         if (dyn.d_tag == DT_NEEDED) {
             file.seekg(_dt_strtab_ofs + dyn.d_un.d_ptr);
-            std::string s;
+            Filename s;
             std::getline(file, s, '\0');
             _needed_libs.push_back(std::move(s));
         } else if (dyn.d_tag == DT_RUNPATH || dyn.d_tag == DT_RPATH) {
             file.seekg(_dt_strtab_ofs + dyn.d_un.d_val);
-            std::string rpath;
+            Path rpath;
             std::getline(file, rpath, '\0');
             boost::split(_rpaths, rpath, boost::is_any_of(":"));
         }
@@ -85,6 +85,6 @@ void elf_file::read_dt_strtab_ofs(std::ifstream& file) {
     }
 }
 
-const std::vector<std::string>& elf_file::get_rpaths() const {
+const std::vector<Path>& elf_file::get_rpaths() const {
     return _rpaths;
 }
