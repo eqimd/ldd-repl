@@ -1,5 +1,8 @@
 #include "util.h"
 
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
+
 #include <iostream>
 #include <string>
 #include <map>
@@ -14,9 +17,9 @@ int main(int argc, char** argv, char** envp) {
     std::string fn(argv[1]);
 
     std::vector<std::string> paths;
-    std::string ld_lib_path = read_ld_library_path(envp);
-    if (ld_lib_path != "") {
-        paths.push_back(ld_lib_path);
+    std::vector<std::string> ld_lib_paths = read_ld_library_paths(envp);
+    for (auto& path : ld_lib_paths) {
+        paths.push_back(path);
     }
     paths.push_back("/lib");
     paths.push_back("/usr/lib");

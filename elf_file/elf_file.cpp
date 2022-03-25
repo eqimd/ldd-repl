@@ -1,10 +1,14 @@
 #include "elf_file.h"
 
+#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string/classification.hpp>
+
 #include <unistd.h>
 #include <cstring>
 #include <iterator>
 #include <iostream>
 #include <vector>
+
 
 
 elf_file::elf_file(const std::string& fn) {
@@ -38,7 +42,9 @@ void elf_file::read_needed_libs_and_rpath(std::ifstream& file) {
             _needed_libs.push_back(std::move(s));
         } else if (dyn.d_tag == DT_RUNPATH || dyn.d_tag == DT_RPATH) {
             file.seekg(_dt_strtab_ofs + dyn.d_un.d_val);
-            std::getline(file, _rpath, '\0');
+            std::string rpath;
+            std::getline(file, rpath, '\0');
+            boost::split(_rpaths, rpath, boost::is_any_of(":"));
         }
     }
 }
@@ -79,6 +85,6 @@ void elf_file::read_dt_strtab_ofs(std::ifstream& file) {
     }
 }
 
-const std::string& elf_file::get_rpath() const {
-    return _rpath;
+const std::vector<std::string>& elf_file::get_rpaths() const {
+    return _rpaths;
 }
